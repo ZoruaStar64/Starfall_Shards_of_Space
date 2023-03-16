@@ -9,6 +9,7 @@ public class playerMovement : MonoBehaviour
     public Transform rotatePoint;
     public GameObject GameCamera;
     public Rigidbody rb;
+    private Animator CosmoAnimator;
     BoxCollider BC;
     [Header("Movement")]
     public string state;
@@ -34,6 +35,8 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         state = "Idle";
+        CosmoAnimator = GetComponent<Animator>();
+        CosmoAnimator.SetInteger("State", 0);
         JumpSound = GetComponent<AudioSource>();
     }
 
@@ -75,6 +78,11 @@ public class playerMovement : MonoBehaviour
             jumpCount = 0;
         }
 
+        if (!IsGrounded() && !FacingWall() || state == "GroundPounding")
+        {
+            CosmoAnimator.SetInteger("State", 2);
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !IsCrouching())
         {
             Jump();
@@ -98,13 +106,20 @@ public class playerMovement : MonoBehaviour
             }
         }
 
+        if (FacingWall() && IsGrounded())
+        {
+            CosmoAnimator.SetInteger("State", 11);
+        }
+
         if (FacingWall() && !IsGrounded() && wallSlideImmunity <= 0)
         {
+            CosmoAnimator.SetInteger("State", 12);
             WallSlide();
         } 
 
         if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
         {
+            CosmoAnimator.SetInteger("State", 13);
             WallJump();
         }
 
@@ -138,17 +153,20 @@ public class playerMovement : MonoBehaviour
         if (moveDirection == Vector3.zero && IsGrounded() && !IsCrouching())
         {
             state = "Idle";
+            CosmoAnimator.SetInteger("State", 0);
         }
 
         if (moveDirection != Vector3.zero && IsGrounded() && !IsCrouching() && walkSpeed > 0)
         {
             state = "Moving";
+            CosmoAnimator.SetInteger("State", 1);
             canCrouchSlide = true;
         }
 
         if (IsCrouching() && moveDirection == Vector3.zero)
         {
             state = "Crouching";
+            CosmoAnimator.SetInteger("State", 6);
             canCrouchSlide = false;
             ChangeColliderSize(1.1f, -0.55f);
             //reduce player collisionbox height by 50% or more
@@ -156,11 +174,13 @@ public class playerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
         {
+            CosmoAnimator.SetInteger("State", 7);
             Backflip();
         }
 
         if (IsCrouching() && moveDirection != Vector3.zero && canCrouchSlide)
         {
+            CosmoAnimator.SetInteger("State", 8);
             CrouchSlide();
             ChangeColliderSize(1.1f, -0.55f);
         }
@@ -168,6 +188,7 @@ public class playerMovement : MonoBehaviour
         if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide)
         {
             walkSpeed = 25;
+            CosmoAnimator.SetInteger("State", 10);
             Crawl();
             ChangeColliderSize(0.9f, -0.65f);
         }
@@ -207,18 +228,21 @@ public class playerMovement : MonoBehaviour
         if (jumpCount == 1)
         {
             state = "RegularJump";
+            CosmoAnimator.SetInteger("State", 3);
             JumpSound.pitch = 1;
             JumpSound.Play();
         }
         if (jumpCount == 2)
         {
             state = "DoubleJump";
+            CosmoAnimator.SetInteger("State", 4);
             JumpSound.pitch = 1.25f;
             JumpSound.Play();
         }
         if (jumpCount == 3)
         {
             state = "TripleJump";
+            CosmoAnimator.SetInteger("State", 5);
             JumpSound.pitch = 1.5f;
             JumpSound.Play();
             jumpHeight = 300;
@@ -239,12 +263,14 @@ public class playerMovement : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        CosmoAnimator.SetInteger("State", 14);
         //rb.useGravity = false;
     }
 
     IEnumerator PoundDown()
     {
         yield return new WaitForSeconds(0.5f);
+        CosmoAnimator.SetInteger("State", 15);
         rb.AddForce(Vector3.down * 16f, ForceMode.Impulse);
     }
     
@@ -306,6 +332,7 @@ public class playerMovement : MonoBehaviour
         }
         if (walkSpeed > 0 && Input.GetKeyDown(KeyCode.Space))
         {
+            CosmoAnimator.SetInteger("State", 9);
             LongJump();
             canCrouchSlide = false;
         }
@@ -314,7 +341,7 @@ public class playerMovement : MonoBehaviour
     void Crawl()
     {
         state = "Crawling";
-        walkSpeed = walkSpeed / 2;
+        walkSpeed = walkSpeed / 1.5f;
         //if crouching then lower base speed by half or 2/3 of normal speed
         //Potentially add a walking mechanic? which would just be walkspeed divided by 1.5f
     }
