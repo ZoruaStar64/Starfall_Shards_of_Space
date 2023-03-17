@@ -57,37 +57,40 @@ public class playerMovement : MonoBehaviour
     {
         Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (Vector3)rb.velocity);
 
-        // Vector3.forward* 
-
-        //rb.velocity = new Vector3((Time.deltaTime * verticalInput * walkSpeed), rb.velocity.y,(-horizontalInput * Time.deltaTime * walkSpeed));
-
+        //If a player IsGrounded reset their walljump status so that they can walljump.
         if(IsGrounded())
         {
             hasWallJumped = false;
             wallJumpCount = 0;
         }
 
+        //If a player is grounded after jumping count down the jumpTiming variable.
+        //This is used for performing the double and triple jump.
         if (IsGrounded() && jumpTiming > 0f)
         {
             jumpTiming -= Time.deltaTime;
         }
 
+        //If a player misses their window to perform a double or triple jump then reset their jump status back to the regular jump's values.
         if (IsGrounded() && jumpTiming <= 0f)
         {
             jumpHeight = 300;
             jumpCount = 0;
         }
 
-        if (!IsGrounded() && !FacingWall() || state == "GroundPounding")
+        //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding and 3: not groundpounding.
+        if (!IsGrounded() && !FacingWall() && state != "GroundPounding")
         {
             CosmoAnimator.SetInteger("State", 2);
         }
 
+        //Check to see if the player presses the spacebar while grounded and not crouching, if all the checks pass then make the player jump.
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !IsCrouching())
         {
             Jump();
         }
 
+        //if a player is midair and then presses the leftshift key then set the doGroundPound variable to true.
         if (!IsGrounded())
         {
             if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -96,6 +99,8 @@ public class playerMovement : MonoBehaviour
             }
         }
 
+        //While the player state is GroundPounding check if the player becomes grounded,
+        //then set the doGroundPound variable to false and their state to Idle.
         if (state == "GroundPounding")
         {
             if (IsGrounded())
@@ -106,23 +111,30 @@ public class playerMovement : MonoBehaviour
             }
         }
 
+        //This will set the player's animation state to Wallshuffling/holding (dunno a good name yet)
         if (FacingWall() && IsGrounded())
         {
             CosmoAnimator.SetInteger("State", 11);
         }
 
+        //if the player is facing a wall, they are not grounded AND have no more wallSlideImmunity
+        //make them WallSlide while also setting their animation state to wallsliding
         if (FacingWall() && !IsGrounded() && wallSlideImmunity <= 0)
         {
             CosmoAnimator.SetInteger("State", 12);
             WallSlide();
         } 
 
+        //if a player presses the spacebar, is facing a wall, is not grounded and hasn't walljumped
+        //make them walljump while setting their animation state to walljumping.
         if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
         {
             CosmoAnimator.SetInteger("State", 13);
             WallJump();
         }
 
+        //if the wallSlideImmunity is above 0 (done by jumping against a wall).
+        //make the wallSlideImmunity variable countdown.
         if (wallSlideImmunity > 0f)
         {
             wallSlideImmunity -= Time.deltaTime;
