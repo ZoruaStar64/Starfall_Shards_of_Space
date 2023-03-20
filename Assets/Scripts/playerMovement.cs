@@ -30,6 +30,7 @@ public class playerMovement : MonoBehaviour
     [Header("Groundedness")]
     //RaycastHit m_Hit;
     public float distToGround;
+    private float antiCheckTimer = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -79,14 +80,15 @@ public class playerMovement : MonoBehaviour
         }
 
         //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding and 3: not groundpounding.
-        if (!IsGrounded() && !FacingWall() && state != "GroundPounding")
+        /*if (!IsGrounded() && !FacingWall() && state != "GroundPounding")
         {
             CosmoAnimator.SetInteger("State", 2);
-        }
+        }*/
 
         //Check to see if the player presses the spacebar while grounded and not crouching, if all the checks pass then make the player jump.
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !IsCrouching())
         {
+            antiCheckTimer = 1;
             Jump();
         }
 
@@ -139,6 +141,11 @@ public class playerMovement : MonoBehaviour
         {
             wallSlideImmunity -= Time.deltaTime;
         }
+
+        if (antiCheckTimer > 0f)
+        {
+            antiCheckTimer -= 0.1f;
+        }
     }
 
     /* Movement functions */
@@ -187,6 +194,7 @@ public class playerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
         {
             CosmoAnimator.SetInteger("State", 7);
+            antiCheckTimer = 1;
             Backflip();
         }
 
@@ -223,8 +231,12 @@ public class playerMovement : MonoBehaviour
 
     bool IsGrounded()
     {
-        Vector3 downwards = transform.TransformDirection(Vector3.down);
-        return Physics.Raycast(transform.position, downwards, distToGround + 0.1f);
+        if (antiCheckTimer <= 0)
+        {
+            Vector3 downwards = transform.TransformDirection(Vector3.down);
+            return Physics.Raycast(transform.position, downwards, distToGround + 0.1f);
+        }
+        return false;
     }    
 
     /* Regular jump/groundpound functions */
@@ -344,6 +356,7 @@ public class playerMovement : MonoBehaviour
         }
         if (walkSpeed > 0 && Input.GetKeyDown(KeyCode.Space))
         {
+            antiCheckTimer = 1;
             CosmoAnimator.SetInteger("State", 9);
             LongJump();
             canCrouchSlide = false;

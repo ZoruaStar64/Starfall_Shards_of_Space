@@ -8344,7 +8344,7 @@ MonoBehaviour:
   hasWallJumped: 0
   wallJumpCount: 0
   wallSlideImmunity: 0
-  distToGround: 1.2
+  distToGround: 1.1
 --- !u!54 &1144453480
 Rigidbody:
   m_ObjectHideFlags: 0
