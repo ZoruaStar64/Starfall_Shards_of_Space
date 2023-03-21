@@ -187,7 +187,7 @@ public class playerMovement : MonoBehaviour
             state = "Crouching";
             CosmoAnimator.SetInteger("State", 6);
             canCrouchSlide = false;
-            ChangeColliderSize(1.1f, -0.55f);
+            ChangeColliderSize(1.3f, -0.46f);
             //reduce player collisionbox height by 50% or more
         }
 
@@ -202,7 +202,7 @@ public class playerMovement : MonoBehaviour
         {
             //CosmoAnimator.SetInteger("State", 6);
             CrouchSlide();
-            ChangeColliderSize(1.1f, -0.55f);
+            ChangeColliderSize(1.3f, -0.46f);
         }
 
         if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide)
@@ -224,7 +224,7 @@ public class playerMovement : MonoBehaviour
 
     void RotateChar()
     {
-        Vector3 CameraRotation = new Vector3(0, RotationPoint.transform.eulerAngles.y, 0);
+        Vector3 CameraRotation = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
 
         transform.eulerAngles = new Vector3(0, CameraRotation.y, 0);
     }
