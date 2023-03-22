@@ -180,9 +180,16 @@ public class playerMovement : MonoBehaviour
             state = "Moving";
             CosmoAnimator.SetInteger("State", 1);
             canCrouchSlide = true;
+        }        
+        
+        if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
+        {
+            CosmoAnimator.SetInteger("State", 7);
+            antiCheckTimer = 1;
+            Backflip();
         }
 
-        if (IsCrouching() && moveDirection == Vector3.zero)
+        if (state != "Backflipping" && IsCrouching() && moveDirection == Vector3.zero)
         {
             state = "Crouching";
             CosmoAnimator.SetInteger("State", 6);
@@ -191,16 +198,8 @@ public class playerMovement : MonoBehaviour
             //reduce player collisionbox height by 50% or more
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
-        {
-            CosmoAnimator.SetInteger("State", 7);
-            antiCheckTimer = 1;
-            Backflip();
-        }
-
         if (IsCrouching() && moveDirection != Vector3.zero && canCrouchSlide)
         {
-            //CosmoAnimator.SetInteger("State", 6);
             CrouchSlide();
             ChangeColliderSize(1.3f, -0.46f);
         }
@@ -210,7 +209,7 @@ public class playerMovement : MonoBehaviour
             walkSpeed = 25;
             CosmoAnimator.SetInteger("State", 10);
             Crawl();
-            ChangeColliderSize(0.9f, -0.65f);
+            ChangeColliderSize(0.6f, -0.1f);
         }
 
         if (moveDirection != Vector3.zero && hasWallJumped == true)
@@ -348,16 +347,19 @@ public class playerMovement : MonoBehaviour
         if (walkSpeed <= 0)
         {
             walkSpeed = 0;
+            CosmoAnimator.speed = 1;
             canCrouchSlide = false;
         }
         if (walkSpeed > 0)
         {
-            //CosmoAnimator.PlayInFixedTime("State", 6, 0.0f);
+            CosmoAnimator.SetInteger("State", 6);
+            CosmoAnimator.speed = 0;
             walkSpeed = walkSpeed - 1;
         }
         if (walkSpeed > 0 && Input.GetKeyDown(KeyCode.Space))
         {
             antiCheckTimer = 1;
+            CosmoAnimator.speed = 1;
             CosmoAnimator.SetInteger("State", 9);
             LongJump();
             canCrouchSlide = false;
