@@ -86,8 +86,8 @@ public class playerMovement : MonoBehaviour
             Backflip();
         }
 
-        //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding and 3: not groundpounding.
-        /*if (!IsGrounded() && !FacingWall() && state != "GroundPounding")
+        //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding, 3: not groundpounding and 4: HAS NOT initiated any type of state other than moving/idle.
+        /*if (!IsGrounded() && !FacingWall() && state = "Moving")
         {
             CosmoAnimator.SetInteger("State", 2);
         }*/
@@ -123,14 +123,27 @@ public class playerMovement : MonoBehaviour
         //This will set the player's animation state to Wallshuffling/holding (dunno a good name yet)
         if (FacingWall() && IsGrounded())
         {
-            CosmoAnimator.SetInteger("State", 11);
+            if (moveDirection == Vector3.zero)
+            {
+                print("wallholding");
+                CosmoAnimator.SetInteger("State", 10);
+            }
+            /*if (moveDirection == Vector3.left)
+            {
+                print("wallshuffle left");
+            }
+            if (moveDirection == Vector3.right)
+            {
+                print("wallshuffle right");
+            }*/
+            
         }
 
         //if the player is facing a wall, they are not grounded AND have no more wallSlideImmunity
         //make them WallSlide while also setting their animation state to wallsliding
         if (FacingWall() && !IsGrounded() && wallSlideImmunity <= 0)
         {
-            CosmoAnimator.SetInteger("State", 12);
+            CosmoAnimator.SetInteger("State", 11);
             WallSlide();
         } 
 
@@ -138,8 +151,8 @@ public class playerMovement : MonoBehaviour
         //make them walljump while setting their animation state to walljumping.
         if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
         {
-            //CHANGE THIS BACK TO 13 ONCE THE WALLJUMP ANIMATION HAS BEEN MADE
-            CosmoAnimator.SetInteger("State", 3);
+            //CHANGE THIS BACK TO 12 ONCE THE WALLJUMP ANIMATION HAS BEEN MADE
+            CosmoAnimator.SetInteger("State", 12);
             WallJump();
         }
 
@@ -213,7 +226,7 @@ public class playerMovement : MonoBehaviour
         if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide)
         {
             walkSpeed = 25;
-            CosmoAnimator.SetInteger("State", 10);
+            CosmoAnimator.SetInteger("State", 9);
             Crawl();
             ChangeColliderSize(0.6f, -0.1f);
         }
@@ -292,14 +305,14 @@ public class playerMovement : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        CosmoAnimator.SetInteger("State", 14);
+        CosmoAnimator.SetInteger("State", 13);
         //rb.useGravity = false;
     }
 
     IEnumerator PoundDown()
     {
         yield return new WaitForSeconds(0.5f);
-        CosmoAnimator.SetInteger("State", 15);
+        //CosmoAnimator.SetInteger("State", 14);
         rb.AddForce(Vector3.down * 16f, ForceMode.Impulse);
     }
     
@@ -366,7 +379,7 @@ public class playerMovement : MonoBehaviour
         {
             antiCheckTimer = 1;
             CosmoAnimator.speed = 1;
-            CosmoAnimator.SetInteger("State", 9);
+            CosmoAnimator.SetInteger("State", 8);
             LongJump();
             canCrouchSlide = false;
         }
