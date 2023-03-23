@@ -79,6 +79,13 @@ public class playerMovement : MonoBehaviour
             jumpCount = 0;
         }
 
+        if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
+        {
+            CosmoAnimator.SetInteger("State", 7);
+            antiCheckTimer = 1;
+            Backflip();
+        }
+
         //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding and 3: not groundpounding.
         /*if (!IsGrounded() && !FacingWall() && state != "GroundPounding")
         {
@@ -131,7 +138,8 @@ public class playerMovement : MonoBehaviour
         //make them walljump while setting their animation state to walljumping.
         if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
         {
-            CosmoAnimator.SetInteger("State", 13);
+            //CHANGE THIS BACK TO 13 ONCE THE WALLJUMP ANIMATION HAS BEEN MADE
+            CosmoAnimator.SetInteger("State", 3);
             WallJump();
         }
 
@@ -155,6 +163,11 @@ public class playerMovement : MonoBehaviour
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
         BC = GetComponent<BoxCollider>();
+
+        if (state != "Sliding")
+        {
+            CosmoAnimator.speed = 1;
+        }
 
         if (!IsCrouching() || !IsGrounded())
         {
@@ -181,13 +194,6 @@ public class playerMovement : MonoBehaviour
             CosmoAnimator.SetInteger("State", 1);
             canCrouchSlide = true;
         }        
-        
-        if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
-        {
-            CosmoAnimator.SetInteger("State", 7);
-            antiCheckTimer = 1;
-            Backflip();
-        }
 
         if (state != "Backflipping" && IsCrouching() && moveDirection == Vector3.zero)
         {
