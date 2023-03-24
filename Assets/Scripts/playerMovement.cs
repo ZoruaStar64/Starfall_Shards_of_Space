@@ -87,10 +87,12 @@ public class playerMovement : MonoBehaviour
         }
 
         //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding, 3: not groundpounding and 4: HAS NOT initiated any type of state other than moving/idle.
-        /*if (!IsGrounded() && !FacingWall() && state = "Moving")
+        if (!IsGrounded() && !FacingWall())
         {
-            CosmoAnimator.SetInteger("State", 2);
-        }*/
+            if (state == "Moving" || state == "Idle") {
+                CosmoAnimator.SetInteger("State", 2);
+            }
+        }
 
         //Check to see if the player presses the spacebar while grounded and not crouching, if all the checks pass then make the player jump.
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !IsCrouching())
@@ -151,7 +153,6 @@ public class playerMovement : MonoBehaviour
         //make them walljump while setting their animation state to walljumping.
         if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
         {
-            //CHANGE THIS BACK TO 12 ONCE THE WALLJUMP ANIMATION HAS BEEN MADE
             CosmoAnimator.SetInteger("State", 12);
             WallJump();
         }
@@ -311,7 +312,7 @@ public class playerMovement : MonoBehaviour
 
     IEnumerator PoundDown()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.6f);
         //CosmoAnimator.SetInteger("State", 14);
         rb.AddForce(Vector3.down * 16f, ForceMode.Impulse);
     }
