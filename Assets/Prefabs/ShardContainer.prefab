@@ -75,10 +75,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShardContainer
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a2712b059533bff4c9799d2db15683df, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7718485349459819452, guid: a2712b059533bff4c9799d2db15683df, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: -6478536213147159724, guid: 062d40fe3d5f97d47808f85c85555adb, type: 3}
+    - target: {fileID: 7966523221999999680, guid: a2712b059533bff4c9799d2db15683df, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2712b059533bff4c9799d2db15683df, type: 3}
 --- !u!1 &2819772949176644563 stripped
