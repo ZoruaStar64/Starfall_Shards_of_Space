@@ -28,7 +28,6 @@ public class playerMovement : MonoBehaviour
     public int wallJumpCount;
     public float wallSlideImmunity;
     [Header("Groundedness")]
-    //RaycastHit m_Hit;
     public float distToGround;
     private float antiCheckTimer = 0f;
 
@@ -79,11 +78,22 @@ public class playerMovement : MonoBehaviour
             jumpCount = 0;
         }
 
+        //performs a backflip upon pressing the spacebar while crouching and standing still.
         if (Input.GetKeyDown(KeyCode.Space) && IsCrouching() && moveDirection == Vector3.zero)
         {
             CosmoAnimator.SetInteger("State", 7);
             antiCheckTimer = 1;
             Backflip();
+        }
+
+        //Checks if the player is still crouchsliding and presses the spacebar, then performs a longjump if true.
+        if (state == "Sliding" && walkSpeed > 0 && Input.GetKeyDown(KeyCode.Space))
+        {
+            antiCheckTimer = 1;
+            CosmoAnimator.speed = 1;
+            CosmoAnimator.SetInteger("State", 8);
+            LongJump();
+            canCrouchSlide = false;
         }
 
         //Checks to see if player is 1: midair, 2: not facing a wall/wallsliding, 3: not groundpounding and 4: HAS NOT initiated any type of state other than moving/idle.
@@ -127,7 +137,7 @@ public class playerMovement : MonoBehaviour
         {
             if (moveDirection == Vector3.zero)
             {
-                print("wallholding");
+                state = "WallHolding";
                 CosmoAnimator.SetInteger("State", 10);
             }
             /*if (moveDirection == Vector3.left)
@@ -151,7 +161,7 @@ public class playerMovement : MonoBehaviour
 
         //if a player presses the spacebar, is facing a wall, is not grounded and hasn't walljumped
         //make them walljump while setting their animation state to walljumping.
-        if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && !IsGrounded() && hasWallJumped == false)
+        if (Input.GetKeyDown(KeyCode.Space) && FacingWall() && state == "WallSliding")
         {
             CosmoAnimator.SetInteger("State", 12);
             WallJump();
@@ -161,7 +171,7 @@ public class playerMovement : MonoBehaviour
         //make the wallSlideImmunity variable countdown.
         if (wallSlideImmunity > 0f)
         {
-            wallSlideImmunity -= Time.deltaTime;
+            wallSlideImmunity -= 0.1f;
         }
 
         if (antiCheckTimer > 0f)
@@ -196,20 +206,20 @@ public class playerMovement : MonoBehaviour
             RotateChar();
         }
 
-        if (moveDirection == Vector3.zero && IsGrounded() && !IsCrouching())
+        if (moveDirection == Vector3.zero && IsGrounded() && !IsCrouching() && !InCrawlspace())
         {
             state = "Idle";
             CosmoAnimator.SetInteger("State", 0);
         }
 
-        if (moveDirection != Vector3.zero && IsGrounded() && !IsCrouching() && walkSpeed > 0)
+        if (moveDirection != Vector3.zero && IsGrounded() && !IsCrouching() && !FacingWall() && !InCrawlspace() && walkSpeed > 0)
         {
             state = "Moving";
             CosmoAnimator.SetInteger("State", 1);
             canCrouchSlide = true;
         }        
 
-        if (state != "Backflipping" && IsCrouching() && moveDirection == Vector3.zero)
+        if (state != "Backflipping" && IsCrouching() && moveDirection == Vector3.zero && !InCrawlspace())
         {
             state = "Crouching";
             CosmoAnimator.SetInteger("State", 6);
@@ -224,17 +234,12 @@ public class playerMovement : MonoBehaviour
             ChangeColliderSize(1.3f, -0.46f);
         }
 
-        if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide)
+        if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide || InCrawlspace())
         {
             walkSpeed = 25;
             CosmoAnimator.SetInteger("State", 9);
             Crawl();
             ChangeColliderSize(0.6f, -0.1f);
-        }
-
-        if (moveDirection != Vector3.zero && hasWallJumped == true)
-        {
-            hasWallJumped = false;
         }
 
         moveDirection = transform.rotation * moveDirection;
@@ -253,7 +258,11 @@ public class playerMovement : MonoBehaviour
         if (antiCheckTimer <= 0)
         {
             Vector3 downwards = transform.TransformDirection(Vector3.down);
-            return Physics.Raycast(transform.position, downwards, distToGround + 0.1f);
+            //return Physics.Raycast(transform.position, downwards, distToGround + 0.1f);
+            if (Physics.Raycast(transform.position + new Vector3(0.5f, 0, 0), downwards, distToGround + 0.1f) || Physics.Raycast(transform.position + new Vector3(-0.5f, 0, 0.5f), downwards, distToGround + 0.1f) || Physics.Raycast(transform.position + new Vector3(-0.5f, 0, -0.5f), downwards, distToGround + 0.1f)) 
+            {
+                return true;
+            }
         }
         return false;
     }    
@@ -313,7 +322,6 @@ public class playerMovement : MonoBehaviour
     IEnumerator PoundDown()
     {
         yield return new WaitForSeconds(0.6f);
-        //CosmoAnimator.SetInteger("State", 14);
         rb.AddForce(Vector3.down * 16f, ForceMode.Impulse);
     }
     
@@ -334,9 +342,10 @@ public class playerMovement : MonoBehaviour
     void WallJump()
     {
         state = "WallJumping";
-        rb.AddForce(Vector3.up * 500);
         hasWallJumped = true;
         transform.eulerAngles = new Vector3(0, rb.transform.eulerAngles.y + 180, 0);
+        rb.AddForce(Vector3.up * 500);
+        rb.AddForce(transform.rotation * Vector3.forward * 300);
         JumpSound.pitch = 1;
         JumpSound.Play();
         wallSlideImmunity = 1.0f;
@@ -350,6 +359,20 @@ public class playerMovement : MonoBehaviour
         {
             return true;
             //When LeftShift is held while grounded make collision about half or less normal size
+        }
+        return false;
+    }
+
+    bool InCrawlspace()
+    {
+        if (IsGrounded())
+        {
+            Vector3 above = transform.TransformDirection(Vector3.up);
+            //return Physics.Raycast(transform.position, above, distToGround - 0.2f);
+            if (Physics.Raycast(transform.position + new Vector3(0.2f, 0, 0), above, distToGround - 0.2f) || Physics.Raycast(transform.position + new Vector3(-0.2f, 0, 0.2f), above, distToGround - 0.2f) || Physics.Raycast(transform.position + new Vector3(-0.2f, 0, -0.2f), above, distToGround - 0.2f))
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -375,14 +398,6 @@ public class playerMovement : MonoBehaviour
             CosmoAnimator.SetInteger("State", 6);
             CosmoAnimator.speed = 0;
             walkSpeed = walkSpeed - 1;
-        }
-        if (walkSpeed > 0 && Input.GetKeyDown(KeyCode.Space))
-        {
-            antiCheckTimer = 1;
-            CosmoAnimator.speed = 1;
-            CosmoAnimator.SetInteger("State", 8);
-            LongJump();
-            canCrouchSlide = false;
         }
     }
 
