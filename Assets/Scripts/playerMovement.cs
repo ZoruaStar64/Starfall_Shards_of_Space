@@ -12,10 +12,14 @@ public class playerMovement : MonoBehaviour
     private Animator CosmoAnimator;
     BoxCollider BC;
     [Header("Movement")]
-    public string state;
+    [SerializeField]
+    private string state = "Idle";
     public float walkSpeed;
     Vector3 moveDirection;
     public bool canCrouchSlide;
+    [Header("Rotation")]
+    public AnimationCurve animCurve;
+    public float time;
     [Header("Jumping")]
     public float jumpHeight;
     public int jumpCount;
@@ -23,7 +27,8 @@ public class playerMovement : MonoBehaviour
     private bool doGroundPound = false;
     AudioSource JumpSound;
     [Header("Wall Jumping")]
-    public float distToWall;
+    [SerializeField]
+    private float distToWall;
     public bool hasWallJumped;
     public int wallJumpCount;
     public float wallSlideImmunity;
@@ -34,7 +39,6 @@ public class playerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        state = "Idle";
         CosmoAnimator = GetComponent<Animator>();
         CosmoAnimator.SetInteger("State", 0);
         JumpSound = GetComponent<AudioSource>();
@@ -57,6 +61,10 @@ public class playerMovement : MonoBehaviour
     {
         Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (Vector3)rb.velocity);
 
+        if (moveDirection != Vector3.zero)
+        {
+            RotateChar();
+        }
         //If a player IsGrounded reset their walljump status so that they can walljump.
         if(IsGrounded())
         {
@@ -195,16 +203,11 @@ public class playerMovement : MonoBehaviour
 
         if (!IsCrouching() || !IsGrounded())
         {
-            walkSpeed = 25;
+            walkSpeed = 50;
             ChangeColliderSize(2.2f, 0);
         }
 
         moveDirection = new Vector3(horizontalInput, 0f, verticalInput);
-
-        if (moveDirection != Vector3.zero && IsGrounded())
-        {
-            RotateChar();
-        }
 
         if (moveDirection == Vector3.zero && IsGrounded() && !IsCrouching() && !InCrawlspace())
         {
@@ -236,7 +239,7 @@ public class playerMovement : MonoBehaviour
 
         if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide || InCrawlspace())
         {
-            walkSpeed = 25;
+            walkSpeed = 50;
             CosmoAnimator.SetInteger("State", 9);
             Crawl();
             ChangeColliderSize(0.6f, -0.1f);
@@ -248,9 +251,27 @@ public class playerMovement : MonoBehaviour
 
     void RotateChar()
     {
-        Vector3 CameraRotation = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+        Vector3 CameraRotation = new Vector3 (0, Camera.main.transform.eulerAngles.y, 0);
 
-        transform.eulerAngles = new Vector3(0, CameraRotation.y, 0);
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit info = new RaycastHit();
+        Quaternion RotationRef = Quaternion.Euler(0, 0, 0);
+        if (Physics.Raycast(ray, out info))
+        {
+            RotationRef = Quaternion.Lerp(transform.rotation, Quaternion.FromToRotation(Vector3.up, info.normal), animCurve.Evaluate(time));
+            //if (RotationRef.eulerAngles.x > 0 || RotationRef.eulerAngles.z > 0) 
+            //{
+            if (IsGrounded())
+            {
+                transform.rotation = Quaternion.Euler(RotationRef.eulerAngles.x, CameraRotation.y, RotationRef.eulerAngles.z);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(RotationRef.eulerAngles.x, transform.eulerAngles.y, RotationRef.eulerAngles.z);
+            }
+            //}
+            //transform.eulerAngles = new Vector3(0, CameraRotation.y, 0);
+        }
     }
 
     bool IsGrounded()
@@ -271,7 +292,7 @@ public class playerMovement : MonoBehaviour
 
     void Jump()
     {
-        rb.AddForce(Vector3.up * jumpHeight);
+        rb.AddForce(Vector3.up * jumpHeight * 2);
         if (jumpCount < 3 && jumpTiming > 0f || jumpCount == 0)
         {
             jumpCount += 1;
@@ -322,7 +343,7 @@ public class playerMovement : MonoBehaviour
     IEnumerator PoundDown()
     {
         yield return new WaitForSeconds(0.6f);
-        rb.AddForce(Vector3.down * 16f, ForceMode.Impulse);
+        rb.AddForce(Vector3.down * (16f * 2), ForceMode.Impulse);
     }
     
     /* Wall related functions/bool */
@@ -344,8 +365,8 @@ public class playerMovement : MonoBehaviour
         state = "WallJumping";
         hasWallJumped = true;
         transform.eulerAngles = new Vector3(0, rb.transform.eulerAngles.y + 180, 0);
-        rb.AddForce(Vector3.up * 500);
-        rb.AddForce(transform.rotation * Vector3.forward * 300);
+        rb.AddForce(Vector3.up * 500 * 2);
+        rb.AddForce(transform.rotation * Vector3.forward * (300 * 2));
         JumpSound.pitch = 1;
         JumpSound.Play();
         wallSlideImmunity = 1.0f;
@@ -397,7 +418,7 @@ public class playerMovement : MonoBehaviour
         {
             CosmoAnimator.SetInteger("State", 6);
             CosmoAnimator.speed = 0;
-            walkSpeed = walkSpeed - 1;
+            walkSpeed = walkSpeed - 2;
         }
     }
 
@@ -414,8 +435,8 @@ public class playerMovement : MonoBehaviour
         state = "Backflipping";
         JumpSound.pitch = 0.8f;
         JumpSound.Play();
-        rb.AddForce(Vector3.up * 850);
-        rb.AddForce(transform.rotation * Vector3.back * 150);
+        rb.AddForce(Vector3.up * 850 * 2);
+        rb.AddForce(transform.rotation * Vector3.back * (150 * 2));
     }
 
     void LongJump()
@@ -423,8 +444,8 @@ public class playerMovement : MonoBehaviour
         state = "LongJumping";
         JumpSound.pitch = 1.25f;
         JumpSound.Play();
-        rb.AddForce(Vector3.up * 250);
-        rb.AddForce(transform.rotation * Vector3.forward * 400);
+        rb.AddForce(Vector3.up * 250 * 2);
+        rb.AddForce(transform.rotation * Vector3.forward * (400 * 2));
         //This will do a longjump like in the 3d mario games
     }
 }

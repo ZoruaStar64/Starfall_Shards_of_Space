@@ -2523,7 +2523,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8279395946605455749}
   m_Layer: 2
-  m_Name: ShardGate
+  m_Name: Old Shardgate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
