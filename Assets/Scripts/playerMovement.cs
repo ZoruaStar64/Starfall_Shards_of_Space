@@ -11,6 +11,7 @@ public class playerMovement : MonoBehaviour
     public Rigidbody rb;
     private Animator CosmoAnimator;
     BoxCollider BC;
+    CapsuleCollider CC;
     [Header("Movement")]
     [SerializeField]
     private string state = "Idle";
@@ -194,7 +195,8 @@ public class playerMovement : MonoBehaviour
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
-        BC = GetComponent<BoxCollider>();
+        //BC = GetComponent<BoxCollider>();
+        CC = GetComponent<CapsuleCollider>();
 
         if (state != "Sliding")
         {
@@ -203,8 +205,9 @@ public class playerMovement : MonoBehaviour
 
         if (!IsCrouching() || !IsGrounded())
         {
-            walkSpeed = 50;
-            ChangeColliderSize(2.2f, 0);
+            walkSpeed = 30;
+            //ChangeColliderSize(2.2f, 0);
+            ChangeColliderSize(2.3f, 0.3f);
         }
 
         moveDirection = new Vector3(horizontalInput, 0f, verticalInput);
@@ -227,22 +230,22 @@ public class playerMovement : MonoBehaviour
             state = "Crouching";
             CosmoAnimator.SetInteger("State", 6);
             canCrouchSlide = false;
-            ChangeColliderSize(1.3f, -0.46f);
+            ChangeColliderSize(2.1f, 0.3f);
             //reduce player collisionbox height by 50% or more
         }
 
         if (IsCrouching() && moveDirection != Vector3.zero && canCrouchSlide)
         {
             CrouchSlide();
-            ChangeColliderSize(1.3f, -0.46f);
+            ChangeColliderSize(2.1f, 0.3f);
         }
 
         if (IsCrouching() && moveDirection != Vector3.zero && !canCrouchSlide || InCrawlspace())
         {
-            walkSpeed = 50;
+            walkSpeed = 30;
             CosmoAnimator.SetInteger("State", 9);
             Crawl();
-            ChangeColliderSize(0.6f, -0.1f);
+            ChangeColliderSize(0.5f, 0.4f);
         }
 
         moveDirection = transform.rotation * moveDirection;
@@ -252,7 +255,6 @@ public class playerMovement : MonoBehaviour
     void RotateChar()
     {
         Vector3 CameraRotation = new Vector3 (0, Camera.main.transform.eulerAngles.y, 0);
-
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit info = new RaycastHit();
         Quaternion RotationRef = Quaternion.Euler(0, 0, 0);
@@ -400,8 +402,10 @@ public class playerMovement : MonoBehaviour
 
     void ChangeColliderSize(float NewHeight, float NewPosition)
     {
-        BC.size = new Vector3(BC.size.x, NewHeight, BC.size.z);
-        BC.center = new Vector3(0, NewPosition, 0);
+        //BC.size = new Vector3(BC.size.x, NewHeight, BC.size.z);
+        //BC.center = new Vector3(0, NewPosition, 0);
+        CC.height = NewHeight;
+        CC.radius = NewPosition;
     }
 
     void CrouchSlide()
@@ -418,7 +422,7 @@ public class playerMovement : MonoBehaviour
         {
             CosmoAnimator.SetInteger("State", 6);
             CosmoAnimator.speed = 0;
-            walkSpeed = walkSpeed - 2;
+            walkSpeed = walkSpeed - 1.5f;
         }
     }
 
