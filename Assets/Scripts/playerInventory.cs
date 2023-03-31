@@ -14,10 +14,19 @@ public class playerInventory : MonoBehaviour
     public UnityEvent<playerInventory> OnCoinCollected;
     public UnityEvent<playerInventory> OnShardCollected;
 
+    private void Start()
+    {
+        if(MainManager.Instance != null)
+        {
+            coinCount = MainManager.Instance.Coins;
+            shardCount = MainManager.Instance.Shards;
+        }
+    }
     public void coinCollected()
     {
         coinCount++;
         OnCoinCollected.Invoke(this);
+        MainManager.Instance.Coins = coinCount;
     }
 
     public void shardCollected(string ShardName, string ShardDescription)
@@ -32,5 +41,6 @@ public class playerInventory : MonoBehaviour
             Description = ShardDescription;
         }
         OnShardCollected.Invoke(this);
+        MainManager.Instance.Shards = shardCount;
     }
 }

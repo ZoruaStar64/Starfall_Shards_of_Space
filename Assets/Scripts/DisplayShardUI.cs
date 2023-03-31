@@ -5,7 +5,7 @@ using TMPro;
 
 public class DisplayShardUI : MonoBehaviour
 {
-    public GameObject CanvasObject;
+    private GameObject CanvasObject;
     private TextMeshProUGUI ShardCollectedText;
     private TextMeshProUGUI ShardCollectedDescription;
     // Start is called before the first frame update
