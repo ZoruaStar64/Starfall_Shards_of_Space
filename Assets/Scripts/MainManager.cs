@@ -8,6 +8,7 @@ public class MainManager : MonoBehaviour
 
     public int Coins;
     public int Shards;
+    public int MusicId;
 
     private void Awake()
     {
