@@ -10,7 +10,6 @@ public class playerMovement : MonoBehaviour
     public GameObject GameCamera;
     public Rigidbody rb;
     private Animator CosmoAnimator;
-    BoxCollider BC;
     CapsuleCollider CC;
     [Header("Movement")]
     [SerializeField]

@@ -9,6 +9,7 @@ public class MainManager : MonoBehaviour
     public int Coins;
     public int Shards;
     public int MusicId;
+    public GameObject CurrentSpawn;
 
     private void Awake()
     {
