@@ -13359,8 +13359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EntryDirection: Exit
-  NewSpawn: {fileID: 0}
-  SpawnPointManager: {fileID: 1684506692}
+  PlayerChar: {fileID: 1144453476}
 --- !u!114 &355928026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70204,8 +70203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EntryDirection: Entrance
-  NewSpawn: {fileID: 0}
-  SpawnPointManager: {fileID: 1684506692}
+  PlayerChar: {fileID: 1144453476}
 --- !u!114 &2127437543
 MonoBehaviour:
   m_ObjectHideFlags: 0

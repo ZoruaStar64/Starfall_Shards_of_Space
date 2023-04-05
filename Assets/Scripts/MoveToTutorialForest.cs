@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 public class MoveToTutorialForest : MonoBehaviour
 {
     public string EntryDirection = "Entrance";
-    public GameObject NewSpawn;
-    public GameObject SpawnPointManager;
+    //public GameObject NewSpawn;
+    public GameObject PlayerChar;
+    //public GameObject SpawnPointManager;
 
     private void Start()
     {
-        SpawnPointManager = GameObject.Find("SpawnPointManager");
+        //SpawnPointManager = GameObject.Find("SpawnPointManager");
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -24,13 +25,15 @@ public class MoveToTutorialForest : MonoBehaviour
 
         if (EntryDirection == "Entrance")
         {
-            NewSpawn = GameObject.Find("Spawnpoint_3");
+            PlayerChar.transform.position = new Vector3(0, 1, 10);
+            //NewSpawn = GameObject.Find("Spawnpoint_3");
         }
         if (EntryDirection == "Exit")
         {
-            NewSpawn = GameObject.Find("Spawnpoint_4");
+            PlayerChar.transform.position = new Vector3(0, 1, 140);
+            //NewSpawn = GameObject.Find("Spawnpoint_4");
         }
-        MainManager.Instance.CurrentSpawn = NewSpawn;
-        SpawnPointManager.GetComponent<SpawnpointManager>().PutPlayerOnSpawnpoint();
+        //MainManager.Instance.CurrentSpawn = NewSpawn;
+        //SpawnPointManager.GetComponent<SpawnpointManager>().PutPlayerOnSpawnpoint();
     }
 }
