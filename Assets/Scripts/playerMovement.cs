@@ -447,7 +447,7 @@ public class playerMovement : MonoBehaviour
         state = "LongJumping";
         JumpSound.pitch = 1.25f;
         JumpSound.Play();
-        rb.AddForce(Vector3.up * 250 * 2);
+        rb.AddForce(Vector3.up * 275 * 2);
         rb.AddForce(transform.rotation * Vector3.forward * (400 * 2));
         //This will do a longjump like in the 3d mario games
     }
