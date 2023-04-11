@@ -20,11 +20,11 @@ public class rotateCamera : MonoBehaviour
         calculateCameraRotation();
         if (Input.GetMouseButton(1))
         { 
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.None;
         }
         if (!Input.GetMouseButton(1))
         {
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 

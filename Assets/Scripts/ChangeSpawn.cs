@@ -18,7 +18,7 @@ public class ChangeSpawn : MonoBehaviour
         if (NewSpawn != MainManager.Instance.CurrentSpawn)
         {
             MainManager.Instance.CurrentSpawn = NewSpawn;
-            SpawnPointManager.GetComponent<SpawnpointManager>().PutPlayerOnSpawnpoint();
+            //SpawnPointManager.GetComponent<SpawnpointManager>().PutPlayerOnSpawnpoint();
         }
     }
 }

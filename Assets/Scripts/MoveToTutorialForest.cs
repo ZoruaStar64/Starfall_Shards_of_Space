@@ -13,6 +13,7 @@ public class MoveToTutorialForest : MonoBehaviour
     private void Start()
     {
         //SpawnPointManager = GameObject.Find("SpawnPointManager");
+        PlayerChar = GameObject.Find("Player");
     }
     private void OnTriggerEnter(Collider other)
     {
