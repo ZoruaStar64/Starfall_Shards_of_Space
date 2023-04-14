@@ -16,6 +16,10 @@ public class playerMovement : MonoBehaviour
     private string state = "Idle";
     public float walkSpeed;
     Vector3 moveDirection;
+    public int hillState;
+    float YCheckNo = 10;
+    bool YCheck = true;
+    float previousYPOS;
     public bool canCrouchSlide;
     [Header("Rotation")]
     public AnimationCurve animCurve;
@@ -188,6 +192,40 @@ public class playerMovement : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        if (transform.position.y < previousYPOS - 0.00002)
+        {
+            //Downhill
+            hillState = 1;
+        }
+        else if (transform.position.y > previousYPOS + 0.00002)
+        {
+            //Uphill
+            hillState = 2;
+        }
+        else
+        {
+            //Normal
+            hillState = 0;
+        }
+        if (YCheckNo <= 0)
+        {
+            YCheck = true;
+        }
+        if (YCheck == true)
+        {
+            previousYPOS = transform.position.y;
+            YCheck = false;
+            YCheckNo = 10;
+        }
+        else
+        {
+            YCheckNo -= 1;
+        }
+        print("" + hillState);
+    }
+
     /* Movement functions */
 
     void Movement()
@@ -274,7 +312,6 @@ public class playerMovement : MonoBehaviour
             //transform.eulerAngles = new Vector3(0, CameraRotation.y, 0);
         }
     }
-
     bool IsGrounded()
     {
         if (antiCheckTimer <= 0)
