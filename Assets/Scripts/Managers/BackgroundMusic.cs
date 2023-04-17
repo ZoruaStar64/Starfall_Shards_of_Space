@@ -72,6 +72,22 @@ public class BackgroundMusic : MonoBehaviour
                 }
                 sameClip = true;
                 break;
+            case 4:
+                if (source.clip != MusicClips[4])
+                {
+                    source.clip = MusicClips[4];
+                    break;
+                }
+                sameClip = true;
+                break;
+            case 5:
+                if (source.clip != MusicClips[5])
+                {
+                    source.clip = MusicClips[5];
+                    break;
+                }
+                sameClip = true;
+                break;
             default:
                 source.clip = MusicClips[2];
                 break;
