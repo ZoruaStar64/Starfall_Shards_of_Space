@@ -22,7 +22,7 @@ public class TutorialToHub : MonoBehaviour
     public IEnumerator TransportToHub()
     {
         yield return new WaitForSeconds(1);
-        SceneManager.LoadSceneAsync("SampleScene");
+        SceneManager.LoadSceneAsync("HubOutskirts");
 
         if (ExitDirection == "Entrance")
         {

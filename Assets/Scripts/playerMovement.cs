@@ -223,7 +223,6 @@ public class playerMovement : MonoBehaviour
         {
             YCheckNo -= 1;
         }
-        print("" + hillState);
     }
 
     /* Movement functions */
@@ -232,7 +231,6 @@ public class playerMovement : MonoBehaviour
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
-        //BC = GetComponent<BoxCollider>();
         CC = GetComponent<CapsuleCollider>();
 
         if (state != "Sliding")
@@ -243,7 +241,6 @@ public class playerMovement : MonoBehaviour
         if (!IsCrouching() || !IsGrounded())
         {
             walkSpeed = 30;
-            //ChangeColliderSize(2.2f, 0);
             ChangeColliderSize(2.3f, 0.3f);
         }
 
