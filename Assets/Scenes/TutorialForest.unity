@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52e2e7f014ccbe41b1a423b9a2312a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MusicId: 0
+  MusicId: 1
   BackgroundMusic: {fileID: 0}
 --- !u!1001 &34663062
 PrefabInstance:
@@ -1486,7 +1486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52e2e7f014ccbe41b1a423b9a2312a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MusicId: 0
+  MusicId: 1
   BackgroundMusic: {fileID: 0}
 --- !u!1 &340565689
 GameObject:

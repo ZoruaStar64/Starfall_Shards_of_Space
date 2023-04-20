@@ -27,15 +27,18 @@ public class BackgroundMusic : MonoBehaviour
 
     void Start()
     {
-        currentSong = MainManager.Instance.MusicId;
-        SwitchMusic();
+        ActivateMusic();
     }
 
     public void SwitchMusic()
     {
         currentSong = MainManager.Instance.MusicId;
-        AudioSource source = gameObject.GetComponent<AudioSource>();
+        ActivateMusic();
+    }
 
+    public void ActivateMusic()
+    {
+        AudioSource source = gameObject.GetComponent<AudioSource>();
         sameClip = false;
 
         switch (currentSong)
@@ -88,14 +91,23 @@ public class BackgroundMusic : MonoBehaviour
                 }
                 sameClip = true;
                 break;
+            case 6:
+                if (source.clip != MusicClips[6])
+                {
+                    source.clip = MusicClips[6];
+                    break;
+                }
+                sameClip = true;
+                break;
             default:
-                source.clip = MusicClips[2];
+                source.clip = MusicClips[0];
                 break;
         }
         if (source.clip == Audio.clip && sameClip == false)
         {
             Audio.Stop();
             Audio.clip = source.clip;
+            Audio.volume = 0.5f;
             Audio.Play();
         }
     }
