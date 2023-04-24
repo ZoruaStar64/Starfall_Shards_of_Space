@@ -5280,7 +5280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RotationPoint: {fileID: 0}
   rotatePoint: {fileID: 0}
-  speed: 30
+  speed: 15
   rotationValue: 0
 --- !u!1 &325859877
 GameObject:
@@ -19927,7 +19927,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1720
+  m_Name: pb_Mesh26534
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
