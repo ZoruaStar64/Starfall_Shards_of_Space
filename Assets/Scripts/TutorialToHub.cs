@@ -10,15 +10,20 @@ public class TutorialToHub : MonoBehaviour
     public GameObject PlayerChar;
 
     // Start is called before the first frame update
+    //Finds the player character.
     void Start()
     {
         PlayerChar = GameObject.Find("Player");
     }
 
+    //On trigger start the TransportToHub Coroutine.
     private void OnTriggerEnter(Collider other)
     {
         StartCoroutine(TransportToHub());
     }
+
+    //Wait for 1 second then load the HubOutskirts scene.
+    //Depending on from which direction the player exits put them at the correct position.
     public IEnumerator TransportToHub()
     {
         yield return new WaitForSeconds(1);

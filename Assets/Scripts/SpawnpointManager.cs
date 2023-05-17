@@ -10,6 +10,7 @@ public class SpawnpointManager : MonoBehaviour
     public GameObject playerChar;
     public Vector3 offset;
 
+    //set Singleton instance
     public void Awake()
     {
         if (Instance != null)
@@ -22,12 +23,16 @@ public class SpawnpointManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
     // Start is called before the first frame update
+    //set the CurrentSpawn to MainManager's CurrentSpawn variable
+    //Afterwards trigger the PutPlayerOnSpawnPoint function.
     void Start()
     {
         CurrentSpawn = MainManager.Instance.CurrentSpawn;
         PutPlayerOnSpawnpoint();
     }
 
+    //set the CurrentSpawn to MainManager's CurrentSpawn variable
+    //set the SpawnPos variable to the CurrentSpawn's position and then put the playerChar on the SpawnPos + offset
     public void PutPlayerOnSpawnpoint()
     {
         CurrentSpawn = MainManager.Instance.CurrentSpawn;

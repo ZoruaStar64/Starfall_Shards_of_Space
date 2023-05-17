@@ -15,6 +15,7 @@ public class rotateCamera : MonoBehaviour
     }
 
     // Update is called once per frame
+    //if the player holds the left mouse button release the mouse from it's confines (let the player control their cursor)
     void Update()
     {
         calculateCameraRotation();
@@ -28,6 +29,7 @@ public class rotateCamera : MonoBehaviour
         }
     }
 
+    //Calculate the camera rotation depending on the player's mouse movement
     void calculateCameraRotation()
     {
         currentRotation.x += Input.GetAxis("Mouse X") * sensitivity;
@@ -39,6 +41,8 @@ public class rotateCamera : MonoBehaviour
         transform.position = playerChar.transform.position;
     }
 
+    //get the player's playerMovement script component and check if the hasWallJumped function is true
+    //this will probably be repurposed for a 2d walljumping check maybe?
     public bool hasWallJumped()
     {
         playerMovement PM = playerChar.GetComponent<playerMovement>();

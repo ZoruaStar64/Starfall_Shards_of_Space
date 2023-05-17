@@ -8,6 +8,7 @@ public class TakePlayerToSpawn : MonoBehaviour
     public Vector3 offset;
 
     // Start is called before the first frame update
+    //Trigger the PutPlayerOnSpawnpoint function
     void Start()
     {
         PutPlayerOnSpawnpoint();
@@ -19,6 +20,7 @@ public class TakePlayerToSpawn : MonoBehaviour
         
     }
 
+    //Set the player's position to this spawnpoint's position + offset
     public void PutPlayerOnSpawnpoint()
     {
         playerChar.transform.position = transform.position + offset;

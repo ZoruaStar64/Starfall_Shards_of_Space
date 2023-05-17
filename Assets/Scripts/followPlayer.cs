@@ -7,6 +7,7 @@ public class followPlayer : MonoBehaviour
      public GameObject playerChar;
      public Vector3 offset;
      // Start is called before the first frame update
+     //This code isn't used anymore should probably delete this script or refurbish it for something else.
      void Start()
      {
          //offset = new Vector3(4,4,4);

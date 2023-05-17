@@ -25,17 +25,25 @@ public class BackgroundMusic : MonoBehaviour
         DontDestroyOnLoad(gameObject); 
     }
 
+    //On Start trigger the ActivateMusic function.
     void Start()
     {
         ActivateMusic();
     }
 
+    //When the this function gets triggered change the currenSong variable to that of MainManager's MusicId variable
+    //Then trigger the ActivateMusic function.
     public void SwitchMusic()
     {
         currentSong = MainManager.Instance.MusicId;
         ActivateMusic();
     }
 
+    //upon triggering this function change the source variable to this object's AudioSource component
+    //Then switch sameClip to false. After this go through a switch and check if currentSong equals to a number
+    //if a case is met check if the source.clip is the same as MusicClips. if not then make source.clip that case's MusicClips
+    //If it is the same then set sameClip to true and break the switch
+    //if source.clip is equal to Audio.clip and sameClip is equal to false then stop the previous clip and start the new one.
     public void ActivateMusic()
     {
         AudioSource source = gameObject.GetComponent<AudioSource>();

@@ -286,6 +286,7 @@ public class playerMovement : MonoBehaviour
         rb.AddForce(moveDirection.normalized * walkSpeed, ForceMode.Force);
     }
 
+    //Rotate the player depending on slope and camera y axis.
     void RotateChar()
     {
         Vector3 CameraRotation = new Vector3 (0, Camera.main.transform.eulerAngles.y, 0);
@@ -309,6 +310,8 @@ public class playerMovement : MonoBehaviour
             //transform.eulerAngles = new Vector3(0, CameraRotation.y, 0);
         }
     }
+
+    //Checks if the player IsGrounded
     bool IsGrounded()
     {
         if (antiCheckTimer <= 0)
@@ -324,7 +327,6 @@ public class playerMovement : MonoBehaviour
     }    
 
     /* Regular jump/groundpound functions */
-
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpHeight * 2);
@@ -359,6 +361,7 @@ public class playerMovement : MonoBehaviour
         jumpTiming = 1f;
     }  
 
+    //upon trigger activate the StopAndSpin function afterwards start the PoundDown Coroutine.
     void GroundPound()
     {
         state = "GroundPounding";
@@ -367,6 +370,7 @@ public class playerMovement : MonoBehaviour
 
     }
 
+    //Stop the player midair and start the groundpound animation.
     void StopAndSpin()
     {
         rb.velocity = Vector3.zero;
@@ -375,6 +379,7 @@ public class playerMovement : MonoBehaviour
         //rb.useGravity = false;
     }
 
+    //after waiting for 0.6 seconds add a constant force downwards.
     IEnumerator PoundDown()
     {
         yield return new WaitForSeconds(0.6f);
@@ -382,19 +387,21 @@ public class playerMovement : MonoBehaviour
     }
     
     /* Wall related functions/bool */
-
+    //Checks if the player is facing a wall.
     bool FacingWall()
     {
         Vector3 forwards = transform.TransformDirection(Vector3.forward);
         return Physics.Raycast(transform.position, forwards, distToWall + 0.1f);
     }
 
+    //makes the player slide down with a constant downwards force.
     void WallSlide()
     {
         state = "WallSliding";
         rb.AddForce(Vector3.down * 1.2f);
     }
 
+    //Makes the player Walljump upwards towards the opposite direction of the wall they're sliding on
     void WallJump()
     {
         state = "WallJumping";
@@ -408,7 +415,7 @@ public class playerMovement : MonoBehaviour
     }
 
     /* Crouching functions/bool */
-
+    //Checks if the player is suposed to be crouching.
     bool IsCrouching()
     {
         if (Input.GetKey(KeyCode.LeftShift) && IsGrounded())
@@ -419,6 +426,7 @@ public class playerMovement : MonoBehaviour
         return false;
     }
 
+    //checks if the player is in a crawlspace.
     bool InCrawlspace()
     {
         if (IsGrounded())
@@ -433,6 +441,7 @@ public class playerMovement : MonoBehaviour
         return false;
     }
 
+    //changes the player's collidersize.
     void ChangeColliderSize(float NewHeight, float NewPosition)
     {
         //BC.size = new Vector3(BC.size.x, NewHeight, BC.size.z);
@@ -441,6 +450,7 @@ public class playerMovement : MonoBehaviour
         CC.radius = NewPosition;
     }
 
+    //make the player crouchslide by freezing their crouching animation and lowring the walkSpeed value by 1.5f every frame.
     void CrouchSlide()
     {
         //will probably be replace with a slide/sliding kick
@@ -459,6 +469,7 @@ public class playerMovement : MonoBehaviour
         }
     }
 
+    //makes the player crawl at half their walkSpeed.
     void Crawl()
     {
         state = "Crawling";
@@ -467,6 +478,7 @@ public class playerMovement : MonoBehaviour
         //Potentially add a walking mechanic? which would just be walkspeed divided by 1.5f
     }
 
+    //makes the player do a Backflip.
     void Backflip()
     {
         state = "Backflipping";
@@ -476,6 +488,7 @@ public class playerMovement : MonoBehaviour
         rb.AddForce(transform.rotation * Vector3.back * (150 * 2));
     }
 
+    //Makes the player perform a longjump
     void LongJump()
     {
         state = "LongJumping";

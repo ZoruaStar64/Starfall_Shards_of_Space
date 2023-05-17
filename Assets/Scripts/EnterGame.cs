@@ -17,6 +17,7 @@ public class EnterGame : MonoBehaviour
         
     }
 
+    //When the game is started by pressing the Star Button on the title screen load the Hub Scene.
     public void StartGame()
     {
         SceneManager.LoadSceneAsync("HubOutskirts");

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class VoidlingFunctions : MonoBehaviour
 {
+    //Currently has no function other than existing
     private void OnTriggerEnter(Collider other)
     {
         playerInventory PI = other.GetComponent<playerInventory>();

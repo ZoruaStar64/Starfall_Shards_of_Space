@@ -10,15 +10,20 @@ public class MoveToTutorialForest : MonoBehaviour
     public GameObject PlayerChar;
     //public GameObject SpawnPointManager;
 
+    //On start find the Player character
     private void Start()
     {
         //SpawnPointManager = GameObject.Find("SpawnPointManager");
         PlayerChar = GameObject.Find("Player");
     }
+
+    //On trigger start the TransportToTutorial Coroutine
     private void OnTriggerEnter(Collider other)
     {
         StartCoroutine(TransportToTutorial());
     }
+
+    //Wait for 1 second then load the TutorialForestScene afterwards depending on the EntryDirection put the Player on the correct spot.
     public IEnumerator TransportToTutorial()
     {
         yield return new WaitForSeconds(1);
